@@ -34,12 +34,12 @@ int main(int argc, char * argv[]) {
     ofs << "\\usepackage{CJKulem}\n";
     ofs << "\\renewcommand{\\rubysep}{-0.1ex}";
 
-    ofs << "\\def\\arraystretch{3}%\n";
+    ofs << "\\def\\arraystretch{2}%\n";
 
     // get date from the input file and add it to the tex file's title
     getline(ifs, line);
     setNumber = line;
-    ofs << "\\title{Kanji Practice Sheet \\{ " + setNumber +" \\}}\n";
+    ofs << "\\title{Vocab Practice Sheet \\{ " + setNumber +" \\}}\n";
 
     // some more preliminary for the tex file...
     ofs << "\\begin{document}\n";
@@ -51,12 +51,16 @@ int main(int argc, char * argv[]) {
 
     //this is where the main loop begins, going through the file and adding into the tex file simultaneously
     for (int i = 0; i < count; i++) {
-        ofs << "\\begin{tabular}{|p{4.0cm}| p{2.5cm} | p{2.5cm}| p{2.5cm} | p{2.5cm} |}\n";
+        getline(ifs, line);
+		size_t ocr = line.find(" ");
+		word = line.substr(0, ocr);
+		def = line.substr(ocr + 1);
+		words.push_back(def);
+		
+		ofs << "\\begin{tabular}{|p{4.0cm}| p{2.5cm} | p{2.5cm}| p{2.5cm} | p{2.5cm} |}\n";
         ofs << "\\hline\n";
-        ifs >> word >> def;
-		words.push_back(word);
-        line = word + " : " + def ;
-        ofs << line + " & & & & \\\\\n";
+
+        ofs << word + " : " + def + " & & & & \\\\\n";
         ofs << "\\hline\n";
         ofs << " & & & & \\\\\n";
         ofs << "\\hline\n";
@@ -82,7 +86,7 @@ int main(int argc, char * argv[]) {
     tfs << "\\def\\arraystretch{3}%\n";
 
    // get date from the input file and add it to the tex file's title
-    tfs << "\\title{Kanji Test Sheet \\{ " + setNumber +" \\}}\n";
+    tfs << "\\title{Vocab Test Sheet \\{ " + setNumber +" \\}}\n";
 
     // some more preliminary for the tex file...
     tfs << "\\begin{document}\n";
@@ -94,7 +98,7 @@ int main(int argc, char * argv[]) {
 
     tfs << "\\hrulefill \\\\ \\\\\n";
     for(int i = 0; i < words.size(); i++){
-        tfs << "{\\Huge " +words[i]+": } \\hrulefill \\\\\n";
+        tfs << "{\\Large " + to_string(i + 1) +". " +words[i]+": } \\hrulefill \\\\\n";
     }
     //close tex file and exit..
     tfs << "\\end{CJK}\n";
