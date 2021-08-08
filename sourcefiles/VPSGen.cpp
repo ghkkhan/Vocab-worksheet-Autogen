@@ -1,30 +1,42 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
+
+void createPracticeSheet(const vector<string> & , string);
+void createTestSheet(vector<string> &, string);
+string getWord(const string &);
+string getDefinition(const string &);
+
 int main(int argc, char * argv[]) {
-    vector<string> words;
+
     if (argc < 2) {
-        cerr << "missing file name. Use: ./KPSGen /path/to/file" << endl;
-        return 1;
+        cerr << "missing file name. Use: './KPSGen.sh /path/to/file'" << endl;
     }
+
     string filename = argv[1];
-    ifstream ifs;
-    ifs.open(filename);
+    ifstream ifs(filename);
     if (!ifs.is_open()) {
-        cerr << "File could not be opened. Please check file name and try again :)" << endl;
+        cerr << "File could not be opened. Please check the file name and try again :)" << endl;
         return 1;
     }
 
-    // get number of kanjis in the file...
+    vector<string> lines;
     string line;
-    getline(ifs, line);
-    int count = stoi(line);
-    string setNumber;
-    // create the tex file to be used. same name as source file, just with a tex extension
-    ofstream ofs(filename + ".tex");
+    while (getline(ifs, line)) {
+        lines.push_back(line);
+    }
 
+    createPracticeSheet(lines, filename);
+    createTestSheet(lines, filename);
+}
+
+void createPracticeSheet(const vector<string> & lines, string filename) {
+    ofstream ofs(filename+".tex");
+
+    
     // adds some headers to the tex file...
     ofs << "\\documentclass{article}\n";
     ofs << "\\usepackage{array}\n";
@@ -36,10 +48,8 @@ int main(int argc, char * argv[]) {
 
     ofs << "\\def\\arraystretch{2}%\n";
 
-    // get date from the input file and add it to the tex file's title
-    getline(ifs, line);
-    setNumber = line;
-    ofs << "\\title{Vocab Practice Sheet \\{ " + setNumber +" \\}}\n";
+    // get date from the lines vector and add it to the tex file's title
+    ofs << "\\title{Vocab Practice Sheet \\{ " + lines[0] +" \\}}\n";
 
     // some more preliminary for the tex file...
     ofs << "\\begin{document}\n";
@@ -47,15 +57,14 @@ int main(int argc, char * argv[]) {
     ofs << "\\begin{CJK}{UTF8}{min}\n";
     ofs << "\\begin{center}\n";
 
+
     string word, def;
 
     //this is where the main loop begins, going through the file and adding into the tex file simultaneously
-    for (int i = 0; i < count; i++) {
-        getline(ifs, line);
-		size_t ocr = line.find(" ");
-		word = line.substr(0, ocr);
-		def = line.substr(ocr + 1);
-		words.push_back(def);
+    for (int i = 1; i < lines.size(); i++) {
+
+        word = getWord(lines[i]);
+        def = getDefinition(lines[i]);
 		
 		ofs << "\\begin{tabular}{|p{4.0cm}| p{2.5cm} | p{2.5cm}| p{2.5cm} | p{2.5cm} |}\n";
         ofs << "\\hline\n";
@@ -72,7 +81,9 @@ int main(int argc, char * argv[]) {
     ofs << "\\end{CJK}\n";
     ofs << "\\end{document}";
     ofs.close();
-    ifs.close();
+}
+
+void createTestSheet(vector<string> & lines, string filename) {
 
     ofstream tfs(filename + "_test.tex");
     tfs << "\\documentclass{article}\n";
@@ -86,7 +97,7 @@ int main(int argc, char * argv[]) {
     tfs << "\\def\\arraystretch{3}%\n";
 
    // get date from the input file and add it to the tex file's title
-    tfs << "\\title{Vocab Test Sheet \\{ " + setNumber +" \\}}\n";
+    tfs << "\\title{Vocab Test Sheet \\{ " + lines[0] +" \\}}\n";
 
     // some more preliminary for the tex file...
     tfs << "\\begin{document}\n";
@@ -95,14 +106,30 @@ int main(int argc, char * argv[]) {
     tfs << "\\begin{center}\n";
     tfs << "{\\Large Fill in the blanks with the corresponding Kanji/Hiragana/Katakana}";
     tfs << "\\end{center}\n";
-
     tfs << "\\hrulefill \\\\ \\\\\n";
-    for(int i = 0; i < words.size(); i++){
-        tfs << "{\\Large " + to_string(i + 1) +". " +words[i]+": } \\hrulefill \\\\\n";
+
+    random_shuffle(lines.begin(), lines.end());     // shuffle the vector...
+
+    srand(time(NULL));
+    string word;
+    for (int i = 0; i < lines.size(); i++){
+        //toss a coin... randomize japanese and english...
+        if(rand() % 100 < 50) word = getWord(lines[i]);
+        else word = getDefinition(lines[i]);
+
+        tfs << "{\\Large " + to_string(i + 1) +". " + word +": } \\hrulefill \\\\\n";
     }
     //close tex file and exit..
     tfs << "\\end{CJK}\n";
     tfs << "\\end{document}";
     tfs.close();
+}
 
+string getWord(const string & s) {
+    size_t ocr = s.find(" ");
+    return s.substr(0, ocr); 
+}
+string getDefinition(const string & s) {
+    size_t ocr = s.find(" ");
+    return s.substr(ocr + 1);
 }
