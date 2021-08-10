@@ -11,7 +11,6 @@ string getWord(const string &);
 string getDefinition(const string &);
 
 int main(int argc, char * argv[]) {
-
     if (argc < 2) {
         cerr << "missing file name. Use: './KPSGen.sh /path/to/file'" << endl;
     }
