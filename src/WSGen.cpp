@@ -1,41 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-
-using namespace std;
-
-void createPracticeSheet(const vector<string> & , string);
-void createTestSheet(vector<string> &, string);
-string getWord(const string &);
-string getDefinition(const string &);
-
-int main(int argc, char * argv[]) {
-    if (argc < 2) {
-        cerr << "missing file name. Use: './KPSGen.sh /path/to/file'" << endl;
-    }
-
-    string filename = argv[1];
-    ifstream ifs(filename);
-    if (!ifs.is_open()) {
-        cerr << "File could not be opened. Please check the file name and try again :)" << endl;
-        return 1;
-    }
-
-    vector<string> lines;
-    string line;
-    while (getline(ifs, line)) {
-        lines.push_back(line);
-    }
-
-    createPracticeSheet(lines, filename);
-    createTestSheet(lines, filename);
-}
+#include "./../includes/WSGen.hpp"
 
 void createPracticeSheet(const vector<string> & lines, string filename) {
     ofstream ofs(filename+".tex");
 
-    
     // adds some headers to the tex file...
     ofs << "\\documentclass{article}\n";
     ofs << "\\usepackage{array}\n";
@@ -44,7 +11,6 @@ void createPracticeSheet(const vector<string> & lines, string filename) {
     ofs << "\\usepackage[overlap, CJK]{ruby}\n";
     ofs << "\\usepackage{CJKulem}\n";
     ofs << "\\renewcommand{\\rubysep}{-0.1ex}";
-
     ofs << "\\def\\arraystretch{2}%\n";
 
     // get date from the lines vector and add it to the tex file's title
@@ -60,7 +26,7 @@ void createPracticeSheet(const vector<string> & lines, string filename) {
     string word, def;
 
     //this is where the main loop begins, going through the file and adding into the tex file simultaneously
-    for (int i = 1; i < lines.size(); i++) {
+    for (size_t i = 1; i < lines.size(); i++) {
 
         word = getWord(lines[i]);
         def = getDefinition(lines[i]);
@@ -111,7 +77,7 @@ void createTestSheet(vector<string> & lines, string filename) {
 
     srand(time(NULL));
     string word;
-    for (int i = 0; i < lines.size(); i++){
+    for (size_t i = 0; i < lines.size(); i++){
         //toss a coin... randomize japanese and english...
         if(rand() % 100 < 50) word = getWord(lines[i]);
         else word = getDefinition(lines[i]);
