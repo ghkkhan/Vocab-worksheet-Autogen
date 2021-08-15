@@ -5,14 +5,14 @@ CFLAGS=-Wall -Werror -c
 
 all: vocab_gen
 
-vocab_gen: main.o WSGen.o 
-		$(CC) main.o WSGen.o -o vocab_gen
+vocab_gen: vocab_gen.o Databank.o 
+		$(CC) vocab_gen.o Databank.o -o vocab_gen
 
-main.o: ./src/main.cpp
-		$(CC) ./src/main.cpp $(CFLAGS)
+vocab_gen.o: ./src/vocab_gen.cpp
+		$(CC) ./src/vocab_gen.cpp $(CFLAGS)
 
-WSGen.o: ./src/WSGen.cpp
-		$(CC) ./src/WSGen.cpp $(CFLAGS)
+Databank.o: ./src/Databank.cpp
+		$(CC) ./src/Databank.cpp $(CFLAGS)
 
 clean:
 		rm -rf *.o

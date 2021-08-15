@@ -1,4 +1,5 @@
 #include "./../includes/WSGen.hpp"
+#include "./../includes/Databank.hpp"
 
 void createPracticeSheet(const vector<string> & lines, string filename) {
     ofstream ofs(filename+".tex");
@@ -88,13 +89,4 @@ void createTestSheet(vector<string> & lines, string filename) {
     tfs << "\\end{CJK}\n";
     tfs << "\\end{document}";
     tfs.close();
-}
-
-string getWord(const string & s) {
-    size_t ocr = s.find(" ");
-    return s.substr(0, ocr); 
-}
-string getDefinition(const string & s) {
-    size_t ocr = s.find(" ");
-    return s.substr(ocr + 1);
 }
