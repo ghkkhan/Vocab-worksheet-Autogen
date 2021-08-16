@@ -3,7 +3,12 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
+#include "./../includes/Databank.hpp"
+#include "./../includes/heap.hpp"
 
-void createPracticeSheet(const vector<string> & , string);
-void createTestSheet(vector<string> &, string);
+
+
+void createPracticeSheet(DataBank &, const int);
+void createTestSheet();
+std::string getWord(const std::string &);
+std::string getDefinition(const std::string &);

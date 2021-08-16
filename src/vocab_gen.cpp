@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string.h>
 #include "./../includes/Databank.hpp"
-// #include "./../includes/WSGen.hpp"
+#include "./../includes/WSGen.hpp"
 
 #define AD "-a"
 #define WS "-w"
@@ -67,9 +67,11 @@ int main(int argc, char* argv[]) {
         }
     }
     if (WORKSHEET_FLAG) {
+        createPracticeSheet(DB, ws_set_size);
         cout << "making worksheet" << ws_set_size << endl;
     }
     if (TEST_FLAG) {
+        createTestSheet();
         cout << "making testsheet" << endl;
     }
     if (SCORE_FLAG) {

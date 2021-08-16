@@ -27,6 +27,7 @@ std::string DataBank::getWord(const std::string & s) {
     size_t ocr = s.find(" ");
     return s.substr(0, ocr); 
 }
+
 std::string DataBank::getDefinition(const std::string & s) {
     size_t ocr = s.find(" ");
     return s.substr(ocr + 1);
