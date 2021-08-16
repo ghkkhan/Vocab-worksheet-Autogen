@@ -3,7 +3,7 @@
 void createPracticeSheet(DataBank & DB, const int num_of_words) {
     
     std::vector <std::string> lines = DB.getAllData();
-    // lines = select_vocab(lines, num_of_words);
+    lines = select_vocab(lines, num_of_words);
 
     if (lines.empty()) {
         std::cerr << "list of vocab is empty ;(" << std::endl;
@@ -15,7 +15,7 @@ void createPracticeSheet(DataBank & DB, const int num_of_words) {
         sofs << lines[i] << std::endl;
     }
     sofs.close();
-
+    std::cout << lines.size() << std::endl;
     std::ofstream ofs("worksheet.tex");
 
     // adds some headers to the tex file...
@@ -41,7 +41,7 @@ void createPracticeSheet(DataBank & DB, const int num_of_words) {
     std::string word, def;
 
     //this is where the main loop begins, going through the file and adding into the tex file simultaneously
-    for (size_t i = 1; i < lines.size(); i++) {
+    for (size_t i = 0; i < lines.size(); i++) {
 
         word = getWord(lines[i]);
         def = getDefinition(lines[i]);
@@ -115,7 +115,7 @@ void createTestSheet() {
 std::string getWord(const std::string & s) {
     size_t ocr = s.find("\""); // find first occurance of quotation mark
     ocr = s.find("\"", ocr + 1); // find second occurance of quotation mark
-    return s.substr(0 + 1, ocr);
+    return s.substr(0 + 1, ocr - 1);
 }
 std::string getDefinition(const std::string & s) {
     size_t ocr1 = s.find("\"");
