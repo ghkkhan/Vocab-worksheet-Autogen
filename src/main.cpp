@@ -1,6 +1,6 @@
 #include "./../includes/WSGen.hpp"
 
-
+using namespace std;
 int main(int argc, char * argv[]) {
     if (argc < 2) {
         cerr << "missing file name. Use: './KPSGen.sh /path/to/file'" << endl;
@@ -19,7 +19,6 @@ int main(int argc, char * argv[]) {
         lines.push_back(line);
     }
 
-    createPracticeSheet(lines, filename);
-    createTestSheet(lines, filename);
+    // createPracticeSheet(lines, filename);
+    // createTestSheet(lines, filename);
 }
-
