@@ -2,8 +2,8 @@
 
 void createPracticeSheet(DataBank & DB, const int num_of_words) {
     
-    std::vector <std::string> lines = DB.getAllData();
-    lines = select_vocab(lines, num_of_words);
+    // std::vector <std::string> lines = DB.getAllData();
+    auto lines = DB.select_vocab(num_of_words);
 
     if (lines.empty()) {
         std::cerr << "list of vocab is empty ;(" << std::endl;
@@ -43,8 +43,8 @@ void createPracticeSheet(DataBank & DB, const int num_of_words) {
     //this is where the main loop begins, going through the file and adding into the tex file simultaneously
     for (size_t i = 0; i < lines.size(); i++) {
 
-        word = getWord(lines[i]);
-        def = getDefinition(lines[i]);
+        word = DataBank::get_db_word(lines[i]);
+        def = DataBank::get_db_def(lines[i]);
 		
 		ofs << "\\begin{tabular}{|p{4.0cm}| p{2.5cm} | p{2.5cm}| p{2.5cm} | p{2.5cm} |}\n";
         ofs << "\\hline\n";
@@ -101,8 +101,8 @@ void createTestSheet() {
     std::string word;
     for (size_t i = 0; i < lines.size(); i++){
         //toss a coin... randomize japanese and english...
-        if(rand() % 100 < 50) word = getWord(lines[i]);
-        else word = getDefinition(lines[i]);
+        if(rand() % 100 < 50) word = DataBank::get_db_word(lines[i]);
+        else word = DataBank::get_db_def(lines[i]);
 
         tfs << "{\\Large " + std::to_string(i + 1) +". " + word +": } \\hrulefill \\\\\n";
     }
@@ -112,15 +112,28 @@ void createTestSheet() {
     tfs.close();
 }
 
-std::string getWord(const std::string & s) {
-    size_t ocr = s.find("\""); // find first occurance of quotation mark
-    ocr = s.find("\"", ocr + 1); // find second occurance of quotation mark
-    return s.substr(0 + 1, ocr - 1);
+std::vector <std::string> begin_score() {
+    std::ifstream sifs("./temp/wstemplist.csv");
+    
+    //ERROR CHECK if file is opened...
+    std::string line;
+    std::vector <std::string> lines;
+    while (std::getline(sifs, line)) {
+        lines.push_back(line);
+    }
+
+    for (size_t i = 0; i < lines.size(); i++) {
+        lines[i] = get_score(lines[i]);
+    }
+    return lines;
 }
-std::string getDefinition(const std::string & s) {
-    size_t ocr1 = s.find("\"");
-    size_t ocr2 = s.find("\"", ocr1 + 1);
-    ocr1 = s.find("\"", ocr2 + 1);
-    ocr2 = s.find("\"", ocr1 + 1);
-    return s.substr(ocr1 + 1, ocr2 - (ocr1+1));
+
+std::string get_score(std::string s) {
+    std::string word = DataBank::get_db_word(s);
+    int b;
+    std::cout << "Did you get this word correct: " << word <<"?"<< std::endl;
+    std::cin >> b;
+    // check if b is either 0 or 1... accept nothing other than 0 for correct and 1 for incorrect...
+
+    return s + std::to_string(b);    
 }

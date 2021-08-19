@@ -51,8 +51,8 @@ int main(int argc, char* argv[]) {
             argv++; argc--;
         }
     }
-    if (SCORE_FLAG && WORKSHEET_FLAG) {
-        cout << "wrong combination of options: DNW." <<endl;
+    if (SCORE_FLAG && (WORKSHEET_FLAG || TEST_FLAG)) {
+        cout << "Wrong combination of options: DNC." <<endl;
         return 1;
     }
 
@@ -75,7 +75,9 @@ int main(int argc, char* argv[]) {
         cout << "making testsheet" << endl;
     }
     if (SCORE_FLAG) {
-        cout << "beginning scoring program" << endl;
+        cout << "beginning scoring program. For each presented word, please enter 0 if answered correctly... and 1 if answered incorrectly" << endl;
+        auto changes = begin_score();
+        DB.updateScores(changes);
     }
 
     return 0;

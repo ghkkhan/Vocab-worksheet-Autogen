@@ -2,13 +2,9 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-
 #include "./../includes/Databank.hpp"
-#include "./../includes/heap.hpp"
-
-
 
 void createPracticeSheet(DataBank &, const int);
 void createTestSheet();
-std::string getWord(const std::string &);
-std::string getDefinition(const std::string &);
+std::vector <std::string> begin_score();
+std::string get_score(std::string s);
