@@ -1,4 +1,14 @@
 oldScripts(Kanji)
 PDFs
 .vscode
+*.PDFs
+*.o 
+*.txt 
+*.csv
+*.pdf 
+*.tex
+*.aux
+*.log
+temp
+vocab_gen
 # .gitignore
