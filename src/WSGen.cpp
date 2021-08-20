@@ -10,6 +10,10 @@ void createPracticeSheet(DataBank & DB, const int num_of_words) {
         return;
     }
 
+    
+    // check for existing temp folder
+    
+
     std::ofstream sofs("./temp/wstemplist.csv");
     for (size_t i = 0; i < lines.size(); i++) {
         sofs << lines[i] << std::endl;
@@ -79,6 +83,9 @@ void createTestSheet() {
     tfs << "\\usepackage{CJKutf8}\n";
     tfs << "\\usepackage[overlap, CJK]{ruby}\n";
     tfs << "\\usepackage{CJKulem}\n";
+    tfs << "\\usepackage{setspace}\n";
+    tfs << "\\doublespace";
+
     tfs << "\\renewcommand{\\rubysep}{-0.1ex}";
 
     tfs << "\\def\\arraystretch{3}%\n";
@@ -90,22 +97,28 @@ void createTestSheet() {
     tfs << "\\begin{document}\n";
     tfs << "\\maketitle\n";
     tfs << "\\begin{CJK}{UTF8}{min}\n";
-    tfs << "\\begin{center}\n";
-    tfs << "{\\Large Fill in the blanks with the corresponding Kanji/Hiragana/Katakana}";
-    tfs << "\\end{center}\n";
+
     tfs << "\\hrulefill \\\\ \\\\\n";
-
     random_shuffle(lines.begin(), lines.end());     // shuffle the vector...
-
     srand(time(NULL));
     std::string word;
-    for (size_t i = 0; i < lines.size(); i++){
-        //toss a coin... randomize japanese and english...
-        if(rand() % 100 < 50) word = DataBank::get_db_word(lines[i]);
-        else word = DataBank::get_db_def(lines[i]);
 
+    size_t half_lines = lines.size()/2;
+
+    tfs << "{\\Large Fill in the blanks with the corresponding English translation.\\\\\n}";
+    for (size_t i = 0; i < half_lines; i++){
+        // japanese to english 
+        word = DataBank::get_db_word(lines[i]);
         tfs << "{\\Large " + std::to_string(i + 1) +". " + word +": } \\hrulefill \\\\\n";
     }
+
+    tfs << "{\\\\\n\\Large Fill in the blanks with the corresponding Kanji/Hiragana/Katakana.\\\\\n}";
+    for (size_t i = half_lines; i < lines.size(); i++){
+        // english to japanese
+        word = DataBank::get_db_def(lines[i]);
+        tfs << "{\\Large " + std::to_string(i + 1 - half_lines) +". " + word +": } \\hrulefill \\\\\n";
+    }
+
     //close tex file and exit..
     tfs << "\\end{CJK}\n";
     tfs << "\\end{document}";
